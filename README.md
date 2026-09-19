@@ -1,42 +1,42 @@
-![](../../workflows/gds/badge.svg) ![](../../workflows/docs/badge.svg) ![](../../workflows/test/badge.svg) ![](../../workflows/fpga/badge.svg)
+# TT VGA Space Shooter
 
-# Tiny Tapeout Verilog Project Template
+A retro, arcade-style space shooter written in Verilog for the Tiny Tapeout hardware platform. Rendered entirely in hardware logic for a 640x480 @ 60Hz VGA display, players must navigate a continuous obstacle course while shooting down patrolling enemy saucers.
 
-- [Read the documentation for project](docs/info.md)
+## Controls
 
-## What is Tiny Tapeout?
+If you are playing via the Wokwi simulator, ensure your virtual pushbuttons are mapped to these keyboard keys:
 
-Tiny Tapeout is an educational project that aims to make it easier and cheaper than ever to get your digital and analog designs manufactured on a real chip.
+| Action | Physical Key | Hardware Pin |
+| :--- | :--- | :--- |
+| **Move Up** | `0` | `ui_in[0]` |
+| **Move Down** | `1` | `ui_in[1]` |
+| **Fire Laser** | `2` | `ui_in[2]` |
+| **Restart Game** | `3` | `ui_in[3]` |
 
-To learn more and get started, visit https://tinytapeout.com.
+---
 
-## Set up your Verilog project
+## Game Mechanics
 
-1. Add your Verilog files to the `src` folder.
-2. Edit the [info.yaml](info.yaml) and update information about your project, paying special attention to the `source_files` and `top_module` properties. If you are upgrading an existing Tiny Tapeout project, check out our [online info.yaml migration tool](https://tinytapeout.github.io/tt-yaml-upgrade-tool/).
-3. Edit [docs/info.md](docs/info.md) and add a description of your project.
-4. Adapt the testbench to your design. See [test/README.md](test/README.md) for more information.
+### The Player
+You control a spaceship on the left side of the screen. The ship can move up and down to navigate through gaps in the incoming defenses. The ship features an animated thruster flame that flickers based on the system frame counter.
 
-The GitHub action will automatically build the ASIC files using [LibreLane](https://www.zerotoasiccourse.com/terminology/librelane/).
+### The Environment & Obstacles
+* **Starfield:** A hardware-generated, infinitely scrolling starfield moves from right to left in the background.
+* **Scrolling Walls:** Two columns of solid walls continuously scroll toward the player. Each wall has a randomly generated safe gap (using a Linear-Feedback Shift Register, or LFSR, for pseudo-randomness).
+* **Collisions:** If your ship crashes into a wall, the screen will flash red, and your ship will be reset to its starting vertical position.
 
-## Enable GitHub actions to build the results page
+### Combat & Enemies
+* **Patrolling Saucers:** Two enemy saucers patrol the right side of the screen. One saucer bounces up and down in the upper-middle zone, while the other patrols the lower-middle zone.
+* **Piercing Lasers:** Pressing fire shoots a high-speed yellow laser. Lasers pass straight through the scrolling walls, allowing you to time your shots to hit the saucers behind enemy lines.
+* **Respawning:** When a saucer is hit, the laser disappears, and the saucer instantly respawns at a newly randomized vertical position within its patrol zone. 
 
-- [Enabling GitHub Pages](https://tinytapeout.com/faq/#my-github-action-is-failing-on-the-pages-part)
+### Scoring System
+* **Tally Marks:** Traditional digital numbers are not used. Instead, every successful hit on an enemy saucer adds a physical "stick" or tally mark to the top left of the screen.
+* **Tracking:** The score tracks continuously. Pressing the Restart key (`1`) will wipe the screen, reset your score to zero, and return your ship to the center.
 
-## Resources
+---
 
-- [FAQ](https://tinytapeout.com/faq/)
-- [Digital design lessons](https://tinytapeout.com/digital_design/)
-- [Learn how semiconductors work](https://tinytapeout.com/siliwiz/)
-- [Join the community](https://tinytapeout.com/discord)
-- [Build your design locally](https://www.tinytapeout.com/guides/local-hardening/)
-
-## What next?
-
-- [Submit your design to the next shuttle](https://app.tinytapeout.com/).
-- Edit [this README](README.md) and explain your design, how it works, and how to test it.
-- Share your project on your social network of choice:
-  - LinkedIn [#tinytapeout](https://www.linkedin.com/search/results/content/?keywords=%23tinytapeout) [@TinyTapeout](https://www.linkedin.com/company/100708654/)
-  - Mastodon [#tinytapeout](https://chaos.social/tags/tinytapeout) [@matthewvenn](https://chaos.social/@matthewvenn)
-  - X (formerly Twitter) [#tinytapeout](https://twitter.com/hashtag/tinytapeout) [@tinytapeout](https://twitter.com/tinytapeout)
-  - Bluesky [@tinytapeout.com](https://bsky.app/profile/tinytapeout.com)
+## Technical Specifications
+* **Video Output:** 640x480 @ 60Hz VGA
+* **Color Depth:** 6-bit RGB (2 bits per color channel)
+* **Logic:** 100% Verilog (No CPU, no frame buffer)

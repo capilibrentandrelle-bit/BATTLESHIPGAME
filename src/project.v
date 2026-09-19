@@ -11,7 +11,7 @@ module tt_um_vga_battleship (
     input  wire       rst_n
 );
 
-    assign uo_out = 8'h00;
+    assign uio_out = 8'h00;
     assign uio_oe  = 8'h00;
     wire _unused = &{ena, ui_in[7:4], uio_in, 1'b0};
 

@@ -185,6 +185,17 @@ module tt_um_vga_battleship (
         else                       begin R=0; G=0; B=1; end
     end
 
-    assign uo_out = {hsync, B[0], G[0], R[0], vsync, B[1], G[1], R[1]};
+    // ---------------- Clocked Output ----------------
+    reg [7:0] uo_out_reg;
+    
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            uo_out_reg <= 8'b00000000;
+        end else begin
+            uo_out_reg <= {hsync, B[0], G[0], R[0], vsync, B[1], G[1], R[1]};
+        end
+    end
+
+    assign uo_out = uo_out_reg;
 
 endmodule
